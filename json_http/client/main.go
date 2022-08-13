@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/jayson-hu/rpc/rpc_interface/service"
+	"github.com/jayson-hu/rpc/json_http/service"
 	"log"
 	"net/rpc"
 )
@@ -38,15 +38,6 @@ func (c *HelloServiceClient) Hello(request string, response *string) error {
 }
 
 func main() {
-	c, err := NewHelloServiceClient("tcp", "localhost:5060")
-	if err != nil {
-		return
-	}
-	var resp string
-	err = c.Hello("bol", &resp)
-	if err != nil {
-		return
-	}
-	fmt.Println(resp)
+
 
 }

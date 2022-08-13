@@ -2,17 +2,19 @@ package main
 
 import (
 	"fmt"
-	"github.com/jayson-hu/rpc/rpc_interface/service"
-	"log"
-	"net"
+	"github.com/jayson-hu/rpc/json_http/service"
+	"io"
+	"net/http"
 	"net/rpc"
+	"net/rpc/jsonrpc"
 )
 
 //约束接口的实现
 var _ service.HelloService = (*HelloService)(nil)
+
 // service handler
 type HelloService struct {
-	
+
 }
 
 // Hello  方法 request 是请求  response 是响应
@@ -24,26 +26,29 @@ func (h *HelloService) Hello(request string, response *string) error {
 
 }
 
+
+func NewRPCReadWriteCloserFromHTTP(w http.ResponseWriter, r *http.Request) *RPCReadWriteCloser {
+	return &RPCReadWriteCloser{w, r.Body}
+}
+
+type RPCReadWriteCloser struct {
+	io.Writer
+	io.ReadCloser
+}
+
 func main() {
-	//RPC对外暴露的对象注册到rpc框架内部
-	_ =  rpc.RegisterName(service.SERVICE_NAME, &HelloService{})
+	rpc.RegisterName(service.SERVICE_NAME, new(HelloService))
 
+	// RPC的服务架设在“/jsonrpc”路径，
+	// 在处理函数中基于http.ResponseWriter和http.Request类型的参数构造一个io.ReadWriteCloser类型的conn通道。
+	// 然后基于conn构建针对服务端的json编码解码器。
+	// 最后通过rpc.ServeRequest函数为每次请求处理一次RPC方法调用
+	http.HandleFunc("/jsonrpc", func(w http.ResponseWriter, r *http.Request) {
+		conn := NewRPCReadWriteCloserFromHTTP(w, r)
+		rpc.ServeCodec(jsonrpc.NewServerCodec(conn))
+	})
 
-	//进行监听
-	listener, err := net.Listen("tcp", ":5060")
-	if err != nil {
-		log.Fatal("Listen error TCP ", err)
-	}
-
-	for {
-		conn, err := listener.Accept()
-		if err != nil {
-			panic(err)
-
-		}
-		go rpc.ServeConn(conn)
-	}
-
+	http.ListenAndServe(":5060", nil)
 
 
 
