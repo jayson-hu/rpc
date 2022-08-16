@@ -1,0 +1,35 @@
+syntax = "proto3";
+package pb;
+option go_package = "github.com/jayson-hu/rpc/grpc/simple/server/pb";
+
+service HelloService {
+  rpc Hello(Request) returns(Response);
+}
+
+
+
+message Request{
+  string value = 1;
+}
+message Response{
+  string value = 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
