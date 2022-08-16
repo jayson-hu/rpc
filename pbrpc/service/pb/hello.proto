@@ -1,0 +1,55 @@
+syntax = "proto3";
+package pb;
+option go_package= "github.com/jayson-hu/rpc/pbrpc/service";
+
+import "google/protobuf/any.proto";
+message Request{
+  string value = 1;
+}
+message Response{
+  string value = 1;
+}
+message AResponse{
+  string value = 1;
+  map<string,string> tags = 2;
+}
+message MyMessage1 {
+  enum EnumAllowingAlias {
+    option allow_alias = true;
+    UNKNOWN = 0;
+    STARTED = 1;
+    RUNNING = 1;
+  }
+}
+//message test{
+//  enum Foo {
+//  reserved 2, 15, 9 to 11, 40 to max;
+//  reserved "FOO", "BAR";
+//}
+//}
+message ErrorStatus {
+  string message = 1;
+  repeated google.protobuf.Any detail =2;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
