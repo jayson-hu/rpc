@@ -4,6 +4,7 @@ option go_package = "github.com/jayson-hu/rpc/grpc/simple/server/pb";
 
 service HelloService {
   rpc Hello(Request) returns(Response);
+  rpc Channel (stream Request) returns (stream Response) {};
 }
 
 
