@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/jayson-hu/rpc/grpc/middleware/server"
 	"github.com/jayson-hu/rpc/grpc/simple/server/pb"
 	"google.golang.org/grpc"
 	"io"
@@ -58,7 +59,9 @@ func (s *HelloServiceServer) Channel(req pb.HelloService_ChannelServer) error {
 
 
 func main() {
-	server := grpc.NewServer()
+	reqauth := server.NewAuthUnaryServerInterceptor()
+	streamAuth := server.NewAuthStreamUnaryServerInterceptor()
+	server := grpc.NewServer(grpc.UnaryInterceptor(reqauth),grpc.StreamInterceptor(streamAuth))
 	//把实现类注册给grpc server
 	//pb.RegisterHelloServiceServer(nil,&HelloServiceServer{})
 	pb.RegisterHelloServiceServer(server,new(HelloServiceServer))
