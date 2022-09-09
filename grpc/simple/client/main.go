@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	client2 "github.com/jayson-hu/rpc/grpc/middleware/client"
+	"github.com/jayson-hu/rpc/grpc/middleware/server"
 	"google.golang.org/grpc/metadata"
 	"time"
 
@@ -27,11 +28,11 @@ func main() {
 	//req <--> resp
 	//携带凭证改进版
 	//添加认证凭证信息
-	//crendential := server.NewClientCredential("admin","123456")// 第一种方式
-	//ctx := metadata.NewOutgoingContext(context.Background(),crendential) // 第一种方式
+	crendential := server.NewClientCredential("admin","123456")// 第一种方式
+	ctx := metadata.NewOutgoingContext(context.Background(),crendential) // 第一种方式
 
 	// 第二种方式： 使用client auth
-	ctx := metadata.NewOutgoingContext(context.Background(), metadata.Pairs())
+	//ctx := metadata.NewOutgoingContext(context.Background(), metadata.Pairs())
 
 
 	//crendential2 := server.NewClientCredential("admin","1234567")
